@@ -312,43 +312,39 @@ event.preventDefault();
 const valid = formElement.reportValidity();
 if (valid) {
 const result = getFormJSON(formElement);
-const photo = [result.photo].flat().filter((file) => !!file.name);
-const sign = [result.sign].flat().filter((file) => !!file.name);
-const signature = [result.signature].flat().filter((file) => !!file.name);
-const stamp = [result.stamp].flat().filter((file) => !!file.name);
 const output = {
-...result,
-photo,
-sign,
-signature,
-stamp
+...result
 }
-// document.write(JSON.stringify(output));
 document.getElementById("form").style.display = "none";
 jsonStr = JSON.stringify(output);
 regeStr = '',
-  f = {
-    brace: 0
-  };
+f = {
+brace: 0
+};
 regeStr = jsonStr.replace(/({|}[,]*|[^{}:]+:[^{}:,]*[,{]*)/g, function(m, p1) {
-    var rtnFn = function() {
-        return '<div style="text-indent: ' + (f['brace'] * 20) + 'px;">' + p1 + '</div>';
-      },
-      rtnStr = 0;
-    if (p1.lastIndexOf('{') === (p1.length - 1)) {
-      rtnStr = rtnFn();
-      f['brace'] += 1;
-    } else if (p1.indexOf('}') === 0) {
-      f['brace'] -= 1;
-      rtnStr = rtnFn();
-    } else {
-      rtnStr = rtnFn();
-    }
-    return rtnStr;
-  });
-  
-  document.getElementById('regeStr').innerHTML += regeStr;
+var rtnFn = function() {
+return '<div style="text-indent: ' + (f['brace'] * 20) + 'px;">' + p1 + '</div>';
+},
+rtnStr = 0;
+if (p1.lastIndexOf('{') === (p1.length - 1)) {
+rtnStr = rtnFn();
+f['brace'] += 1;
+} else if (p1.indexOf('}') === 0) {
+f['brace'] -= 1;
+rtnStr = rtnFn();
+} else {
+rtnStr = rtnFn();
+}
+return rtnStr;
+});
+
+document.getElementById('regeStr').innerHTML += regeStr;
 }
 }
 
 formElement.addEventListener("submit", handler)
+function getFile (elm) {
+    new Response(elm.files[0]).json().then(json => {
+      console.log(json)
+    }, err => {})
+}
